@@ -24,9 +24,12 @@ let brickHeight = 20;
 let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft = 30;
+
+//pontuação e vida
 let score = 0;
 let life = 3;
 
+//inicio dos tijolos 
 let bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
   bricks[c] = [];
@@ -48,7 +51,7 @@ function brickCollisionDetection() {
                 if(score == brickRowCount * brickColumnCount){
                     alert("Você venceu! Parabéns");
                     document.location.reload;
-                    clearInterval(interval);
+        
                 }
               }           
         } 
@@ -106,6 +109,7 @@ function drawBall() {
   ctx.closePath();
 }
 
+//função principal 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
@@ -128,7 +132,6 @@ function draw() {
       if(life == 0){
         alert("Game Over!");
         document.location.reload();
-        clearInterval(interval);
       }else{//jogador morreu, reseta tudo 
         x = canvas.width / 2; // inicial horizontal
         y = canvas.height - 35; // inicial vertical
@@ -153,8 +156,12 @@ function draw() {
 
   x += dx;
   y += dy;
+
+  requestAnimationFrame(draw);
 }
-let interval = setInterval(draw, 10);
+
+//let interval = setInterval(draw, 10);
+draw()
 
 function keyDownHandler(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
