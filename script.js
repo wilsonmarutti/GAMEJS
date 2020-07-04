@@ -24,6 +24,8 @@ let brickHeight = 20;
 let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft = 30;
+let score = 0;
+let life = 3;
 
 let bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -42,10 +44,28 @@ function brickCollisionDetection() {
                 // colidiu
                 dy = -dy;
                 brick.visible = false;
+                score++;
+                if(score == brickRowCount * brickColumnCount){
+                    alert("Você venceu! Parabéns");
+                    document.location.reload;
+                    clearInterval(interval);
+                }
               }           
         } 
       }
     }
+  }
+
+  function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Pontuação: " + score, 8, 20);
+  }
+
+  function drawlifes() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Vidas: " + life, canvas.width -65, 20);
   }
 
 function drawBrick(brickX, brickY) {
@@ -91,6 +111,8 @@ function draw() {
   drawBall();
   drawPaddle();
   brickCollisionDetection();
+  drawScore();
+  drawlifes();
   drawBricks();
   // verifica se a bola sai na horizontal
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -102,9 +124,19 @@ function draw() {
     y + ballRadius >= paddleY) {
     dy = -dy;
   } else if (y + dy > canvas.height - ballRadius) {
-    alert("Game Over!");
-    document.location.reload();
-    clearInterval(interval);
+      life--;// quantidade de vidas, chegou a zero morre
+      if(life == 0){
+        alert("Game Over!");
+        document.location.reload();
+        clearInterval(interval);
+      }else{//jogador morreu, reseta tudo 
+        x = canvas.width / 2; // inicial horizontal
+        y = canvas.height - 35; // inicial vertical
+        dx = 2; // variação horizontal
+        dy = -2
+        paddleX = (canvas.width - paddleWidth) / 2;
+      }
+    
   }
 
   if (rightPressed) {
@@ -142,6 +174,14 @@ function keyUpHandler(e) {
   }
 }
 
+function mouseMoveHandler(e){
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX >0 && relativeX < canvas.width){
+        paddleX = relativeX - paddleWidth/2;
+    }
+}
+
 // adiciona eventos de controle para o teclado
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
